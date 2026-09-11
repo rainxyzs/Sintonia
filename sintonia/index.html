@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SINTONIA – Músicas pelo seu humor</title>
+<meta name="description" content="Digite o seu humor e sintonize seis músicas sob medida, de qualquer gênero.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <div class="brilho brilho-a"></div>
+  <div class="brilho brilho-b"></div>
+</div>
+
+<header class="topo">
+  <h1 class="titulo">SINTONIA</h1>
+  <p class="descricao">Digite como você está se sentindo e sintonize seis músicas sob medida para o momento.</p>
+</header>
+
+<main class="palco">
+
+  <section class="controles" aria-label="Seleção de humor">
+    <label for="humorCustom" class="rotulo-campo">Como você está se sentindo agora?</label>
+    <div class="linha-sintonizar">
+      <input type="text" id="humorCustom" placeholder="Ex.: aventureiro, acolhido, eufórico..." maxlength="40" autocomplete="off">
+      <button id="btnSintonizar" class="botao-neon" type="button">Sintonizar</button>
+    </div>
+    <p id="estado" class="estado" role="status" aria-live="polite"></p>
+  </section>
+
+  <section class="hero-80s" aria-hidden="true">
+    <div class="caixa-bola">
+      <span class="fio"></span>
+      <span class="faisca fc1"></span>
+      <span class="faisca fc2"></span>
+      <span class="faisca fc3"></span>
+      <div class="suspensao">
+        <div class="nucleo"></div>
+        <div class="bola-3d" id="bola3d"></div>
+        <div class="luz"></div>
+      </div>
+    </div>
+    <div class="equalizador" id="equalizador" aria-hidden="true"></div>
+  </section>
+
+  <section id="resultado" class="resultado" aria-live="polite" hidden>
+    <h2>Sintonizado para: <span id="rotuloHumor">—</span></h2>
+    <div id="grade" class="grade"></div>
+    <div class="acoes">
+      <button id="btnBuscarOutras" class="botao-neon botao-secundario" type="button">Buscar outras músicas</button>
+    </div>
+  </section>
+
+  <section class="painel-info" aria-label="Suas estatísticas">
+    <div class="info-card"><span class="info-num" id="numDescobertas">0</span><span class="info-rotulo">músicas descobertas</span></div>
+    <div class="info-card"><span class="info-num" id="numPreviews">0</span><span class="info-rotulo">prévias tocadas</span></div>
+  </section>
+
+  <section class="historico" aria-label="Histórico">
+    <h2>Últimas sintonias</h2>
+    <ul id="listaHistorico" class="lista-historico"></ul>
+  </section>
+
+</main>
+
+<footer class="rodape">
+  <p>SINTONIA © 2026</p>
+  <p>Músicas e capas reais: iTunes Search API (Apple) — prévias oficiais de 30 segundos</p>
+</footer>
+
+<audio id="player" preload="none"></audio>
+<noscript>Ative o JavaScript para usar o SINTONIA.</noscript>
+<script src="app.js"></script>
+</body>
+</html>
