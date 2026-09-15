@@ -7,3 +7,7 @@ Background80s_original.jpg
 render_fundo_2k.py
 gerar-docx.ps1
 ROTEIRO*.docx
+
+# APKs ficam no GitHub Releases (não no repositório)
+*.apk
+releases/
