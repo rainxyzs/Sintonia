@@ -126,28 +126,82 @@
   }
 
   // ---------------- busca na API do iTunes ----------------
+  // Gêneros brasileiros a remover dos resultados (MPB é mantido)
+  const GENEROS_BR = [
+    'sertanejo', 'funk carioca', 'forro', 'axe', 'pagode', 'samba',
+    'arrocha', 'brega', 'bossa nova', 'pagode baiano'
+  ];
+  // normaliza (minúsculas + remove acentos) p/ comparar com o gênero da API
+  function normalizar(s) {
+    return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  }
+  function ehGeneroBR(genero) {
+    const g = normalizar(genero);
+    return GENEROS_BR.some(function (br) { return g.indexOf(br) !== -1; });
+  }
+  // Detecta texto em portugues (acentos + palavras comuns) p/ remover musicas BR
+  function ehPortugues(texto) {
+    const t = String(texto || '');
+    const temAcentoPT = /[áàâãçéèêíïóôõúü]/i.test(t);
+    const palavras = /\b(de|da|do|me|te|eu|meu|minha|que|não|sem|com|pra|nós|ela|você|só|tem|para|princesa)\b/i;
+    return temAcentoPT || palavras.test(t);
+  }
+
   async function buscar(termo) {
     const offset = Math.floor(Math.random() * 41);
     const url = API + '?term=' + encodeURIComponent(termo) +
-      '&media=music&entity=song&limit=25&offset=' + offset;
+      '&media=music&entity=song&limit=25&country=US&offset=' + offset;
     const resp = await fetch(url);
     if (!resp.ok) return [];
     const dados = await resp.json();
     return (dados.results || []).filter(function (t) {
-      return t.trackId && t.artworkUrl100 && t.previewUrl;
+      return t.trackId && t.artworkUrl100 && t.previewUrl
+        && !ehGeneroBR(t.primaryGenreName)
+        && !ehPortugues(t.trackName)
+        && !ehPortugues(t.artistName);
     });
   }
 
-  // Expande o humor digitado em vários estilos -> gêneros internacionais
+  // Mapa de humores -> termos EMOCIONAIS em portugues (conecta com o sentimento)
+  const MOOD_TERMOS = {
+    'triste': ['triste', 'saudade', 'choro', 'coracao partido', 'solidao'],
+    'feliz': ['alegria', 'felicidade', 'sorriso', 'celebrar'],
+    'apaixonado': ['amor', 'paixao', 'romance', 'paixao'],
+    'apaixonada': ['amor', 'paixao', 'romance'],
+    'animado': ['animado', 'energia', 'festa', 'celebrar'],
+    'animada': ['animada', 'energia', 'festa'],
+    'calmo': ['calma', 'paz', 'serenidade', 'relax'],
+    'calma': ['calma', 'paz', 'serenidade'],
+    'nostalgico': ['nostalgia', 'recordacao', 'memoria', 'saudade'],
+    'nostalgica': ['nostalgia', 'recordacao', 'memoria'],
+    'bravo': ['ira', 'raiva', 'revolta', 'furioso'],
+    'brava': ['ira', 'raiva', 'revolta'],
+    'focado': ['foco', 'concentracao', 'determinacao'],
+    'eufórico': ['euforia', 'extase', 'alegria intensa'],
+    'euforico': ['euforia', 'extase', 'alegria intensa'],
+    'melancolico': ['melancolia', 'tristeza suave', 'saudade'],
+    'melancolica': ['melancolia', 'tristeza suave'],
+    'relaxado': ['relaxamento', 'descanso', 'tranquilidade'],
+    'aventureiro': ['aventura', 'liberdade', 'estrada', 'explorar'],
+    'aventureira': ['aventura', 'liberdade', 'estrada'],
+    'rebelde': ['rebelde', 'rebeldia', 'gritar', 'explodir'],
+    'sonhador': ['sonho', 'imaginar', 'fantasia'],
+    'confiante': ['confianca', 'poder', 'vencer', 'forte'],
+    'vitorioso': ['vitoria', 'conquista', 'campeao', 'vencedor'],
+    'vitoriosa': ['vitoria', 'conquista', 'campea'],
+    'tranquilo': ['tranquilidade', 'paz', 'silencioso'],
+    'tranquila': ['tranquilidade', 'paz'],
+    'misterioso': ['misterio', 'sombrio', 'enigma'],
+    'misteriosa': ['misterio', 'sombrio'],
+    'acolhido': ['aconchego', 'abrigo', 'casa', 'amparo'],
+    'acolhida': ['aconchego', 'amparo']
+  };
+
+  // Expande o humor digitado em termos emocionais (conectados ao sentimento)
   function termosBusca(custom) {
     const base = custom.toLowerCase().trim();
-    const estilos = [
-      '', ' pop', ' rock', ' acoustic', ' electronic', ' dance', ' jazz',
-      ' hip hop', ' soul', ' funk', ' indie', ' metal', ' punk', ' blues',
-      ' country', ' classical', ' latin', ' reggae', ' r&b', ' folk',
-      ' alternative', ' house', ' trance', ' ambient', ' gospel', ' opera'
-    ];
-    return estilos.map(function (s) { return (base + s).trim().slice(0, 60); });
+    const termos = MOOD_TERMOS[base] || [base];
+    return termos.map(function (t) { return t.slice(0, 60); });
   }
 
   // ---------------- ação principal ----------------

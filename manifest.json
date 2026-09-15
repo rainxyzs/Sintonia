@@ -1,6 +1,7 @@
 {
   "name": "SINTONIA",
   "short_name": "SINTONIA",
+  "version": "1.0.1",
   "description": "Digite o seu humor e sintonize seis músicas sob medida para o momento.",
   "start_url": "./index.html",
   "display": "standalone",

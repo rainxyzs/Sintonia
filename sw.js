@@ -1,4 +1,4 @@
-const CACHE = 'sintonia-v1';
+const CACHE = 'sintonia-v1.0.1';
 const ASSETS = [
   './',
   './index.html',
@@ -6,7 +6,8 @@ const ASSETS = [
   './app.js',
   './manifest.json',
   './icon-192.png',
-  './icon-512.png'
+  './icon-512.png',
+  './Background80s.png'
 ];
 
 self.addEventListener('install', function (e) {
